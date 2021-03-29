@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  django:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: python manage.py runserver 0.0.0.0:8001
+    volumes:
+      - .database/db.sqlite3:/code/database/db.sqlite3
+    ports:
+      - "8001:8001"
