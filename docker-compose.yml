@@ -12,7 +12,7 @@ services:
     volumes:
       - .:/code
       - ./staticfiles:/code/staticfiles
-      - ./database/db.sqlite3:/code/database/db.sqlite3
+      - ./database:/code/database
     command: bash -c "python manage.py collectstatic --noinput && python manage.py migrate && gunicorn transf.wsgi:application -b 0.0.0.0:8001 --workers 3"
   nginx:
     restart: always
