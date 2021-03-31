@@ -3,7 +3,6 @@ from django.db import models
 
 class Satelite(models.Model):
     satelite = models.CharField('Satélite', max_length=255)
-
     class Meta :
         ordering = ['satelite']
 
@@ -11,18 +10,29 @@ class Satelite(models.Model):
         return self.satelite
 
 
+class Sensor(models.Model):
+    sensor = models.CharField(max_length=255)
+    satelite =  models.ForeignKey("core.Satelite", null=True, related_name="sensor_satelite", on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "Sensor"
+        verbose_name_plural = "Sensores"
+
+    def __str__(self):
+        return f"{self.satelite.satelite}/{self.sensor}"
+
 class Servidor(models.Model):
     servidor = models.CharField(max_length=255)
     montagem = models.CharField('Montagem', max_length=255)
     formato_diretorio = models.CharField('Formato do diretorio', max_length=255)
-    satelite = models.ForeignKey("core.Satelite", verbose_name="Satélite", on_delete=models.PROTECT)
+    
 
     class Meta :
         ordering = ['servidor']
         verbose_name_plural = "Servidores"
 
     def __str__(self):
-        return f"{self.satelite.satelite}/{self.servidor}"
+        return self.servidor
 
 
 class Antena(models.Model):
@@ -42,11 +52,13 @@ class Antena(models.Model):
         return f"{self.local}/{self.antena}"
 
 
+
 class Passagem(models.Model):
     antena = models.ForeignKey("core.Antena",  on_delete=models.PROTECT)
     servidor = models.ForeignKey("core.Servidor",  on_delete=models.PROTECT)
     inicio = models.DateTimeField()
     fim = models.DateTimeField()
+    sensor = models.ForeignKey("core.Sensor", verbose_name="Satélite/Sensor", on_delete=models.PROTECT)
     qt_passagem = models.IntegerField('Quant. Passagem', blank=True, null=True)
     qt_arquivos = models.IntegerField('Quant. Arquivo',  blank=True, null=True)
 
